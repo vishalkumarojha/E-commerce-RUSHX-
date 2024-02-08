@@ -1,0 +1,123 @@
+
+{% extends "basic.html" %}
+{% block body %}
+
+{% for catprods in catprods %}
+<div class="bg-light py-3">
+      
+    <div class="site-section">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="border">
+              <img src="/media/{{catprods.image}}" alt="Image" class="img-fluid">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <h2 class="text-black namee" id="namep{{catprods.id}}">{{catprods.Product_Name}}</h2>
+            <script>
+              var tit = document.getElementById('namep{{catprods.id}}').innerHTML  + " | RushX";
+              document.title = tit ;
+            </script>
+            <p>{{catprods.Description}}</p>
+            <p id="pricep{{catprods.id}}"><strong class="text-primary h4">Price : Rs. {{catprods.Price}}</strong></p>
+            <span><button class="buy-now btn btn-sm height-auto px-4 py-3 btn-primary addtoCart" style="color: white;" id="p{{catprods.id}}">Add To Cart</button></span>
+            <span><a href="/cart" class="buy-now btn btn-sm height-auto px-4 py-3 btn-primary">CheckOut</a></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+{% endfor %}
+<div id="chat-container">
+  <div id="chat-display"></div>
+  <input type="text" id="user-input" placeholder="Type your message here...">
+  <button id="send-btn">Send</button>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function () {
+    var productId = "{{ catprods.id }}";
+    // Get CSRF token
+    function getCookie(name) {
+      var cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+          var cookie = cookies[i].trim();
+          // Does this cookie string begin with the name we want?
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
+
+    $('#send-btn').click(function () {
+      sendMessage();
+    });
+
+    function sendMessage() {
+      var message = $('#user-input').val().trim();
+      if (message !== '') {
+        displayMessage(message, 'user');
+        fetchResponse(message, productId);  // Pass productId to fetchResponse
+        $('#user-input').val('');
+      }
+    }
+
+    function fetchResponse(message, productId) {
+      $.ajax({
+        url: '{% url "chatbot" ID_of_the_Product=catprod.id %}',  // Pass the product_id as an argument
+        method: 'POST',
+        data: { message: message },  // No need to include productId in the data
+        headers: { 'X-CSRFToken': csrftoken },
+        success: function (data) {
+          displayMessage(data.response, 'bot');
+        }
+      });
+    }
+
+    function displayMessage(message, sender) {
+      $('#chat-display').append('<div class="message ' + sender + '">' + message + '</div>');
+      $('#chat-display').scrollTop($('#chat-display')[0].scrollHeight);
+    }
+
+  });
+</script>
+    <div class="site-section">
+      <div class="container">
+        <div class="row">
+          <div class="title-section text-center col-12">
+            <h2 class="text-uppercase">More Products</h2>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 block-3 products-wrap">
+            <div class="nonloop-block-3 owl-carousel">
+              
+            {% for allprods in allprods %}
+            <div class="product">
+                <a href="/view/{{allprods.Product_Name}}/{{allprods.id}}" class="item">
+                  <img src="/media/{{allprods.image}}" alt="Image" class="img-fluid" style="height: 14em;">
+                  <div class="item-info" style="height: 10em;">
+                <a href="/view/{{allprods.Product_Name}}/{{allprods.id}}" class="item" style="display: block;">
+                    <h3>{{allprods.Product_Name}}</h3>
+                    <span class="collection d-block">{{allprods.Cateogary}}</span>
+                    <strong class="price" id="pricep{{allprods.id}}">Price: Rs. {{allprods.Price}}</strong>
+                  </div>
+                </a>
+              </div>
+            {% endfor %}
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+{% endblock body %}
