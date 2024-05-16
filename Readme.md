@@ -36,9 +36,7 @@ You can Depoly this Code but Be sure to change the DEBUG = False in settings.py 
 
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
-## Authors
 
-* **Aman Ojha** - *Initial work* - [Aman Ojha](https://github.com/coderaman07)
 
 ## License
 
