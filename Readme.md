@@ -10,7 +10,7 @@ First check all the You are having all the files including db.sqlite3 DataBase
 
 Only Pre-Requiste is that you Install Python Interpreter.
 
-### Installing
+**Installing**
 
 1. Open your Terminal in Linux or Mac and Command Prompt in Windows
 2. Create a Virtual Enviroment by using a Command "virtualenv virtualenv". Your Virtual Enviroment has been created with the Name of virualenv
